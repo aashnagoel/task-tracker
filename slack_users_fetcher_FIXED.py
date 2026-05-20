@@ -1,76 +1,71 @@
 #!/usr/bin/env python3
 """
-Slack Users Fetcher - SIMPLIFIED VERSION
+Slack Users Fetcher - SECURE VERSION
+Fetches list of Slack users and caches them locally
+Token comes from environment variable, NOT hardcoded
 """
 
 import json
+import os
 from pathlib import Path
-import requests
-import sys
 
-def main():
-    bot_token = "xoxb-10479801607904-11164856158566-gSb4JEMo1m7jERALkyydLNLj"
-    workspace_name = "TSIP Contributors"
+def fetch_slack_users(bot_token):
+    """Fetch Slack users using bot token"""
+    try:
+        import requests
+    except ImportError:
+        print("ERROR: requests library not found. Run: pip3 install requests")
+        return []
     
-    # Get current directory (wherever you run this from)
-    current_dir = Path.cwd()
-    
-    print(f"Current directory: {current_dir}")
-    print(f"Fetching users from Slack workspace: {workspace_name}")
-    
-    # Fetch from Slack
     url = "https://slack.com/api/users.list"
-    headers = {
-        "Authorization": f"Bearer {bot_token}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {bot_token}"}
     
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         data = response.json()
         
         if not data.get("ok"):
-            print(f"ERROR: Slack API error: {data.get('error')}")
-            return
+            print(f"ERROR: {data.get('error', 'Unknown error')}")
+            return []
         
         users = data.get("members", [])
-        
-        # Filter and process
-        processed_users = []
-        for user in users:
-            if user.get("is_bot") or user.get("deleted"):
-                continue
-            
-            processed_users.append({
-                "id": user.get("id"),
-                "username": user.get("name"),
-                "real_name": user.get("real_name"),
-                "display_name": user.get("profile", {}).get("display_name"),
-            })
-        
-        processed_users.sort(key=lambda x: x["username"])
-        
-        # Save to file
-        cache_file = current_dir / "slack_users_tsip_contributors.json"
-        
-        with open(cache_file, 'w') as f:
-            json.dump({
-                "workspace": workspace_name,
-                "user_count": len(processed_users),
-                "users": processed_users
-            }, f, indent=2)
-        
-        print(f"\n✓ Successfully fetched {len(processed_users)} users from Slack")
-        print(f"✓ Saved to: {cache_file}")
-        print(f"\nFirst 10 users:")
-        for user in processed_users[:10]:
-            print(f"  - {user['username']:25} ({user['real_name']})")
-        if len(processed_users) > 10:
-            print(f"  ... and {len(processed_users) - 10} more")
-        
+        print(f"✓ Fetched {len(users)} Slack users")
+        return users
+    
     except Exception as e:
         print(f"ERROR: {e}")
+        return []
+
+def save_users_cache(users):
+    """Save users to local cache file"""
+    cache_file = Path.cwd() / "slack_users_tsip_contributors.json"
+    cache_data = {"users": users, "count": len(users)}
+    
+    with open(cache_file, 'w') as f:
+        json.dump(cache_data, f, indent=2)
+    
+    print(f"✓ Saved cache to {cache_file.name}")
+
+def main():
+    print("\n=== Slack Users Fetcher ===")
+    
+    # Get token from environment variable (SECURE - not hardcoded)
+    bot_token = os.getenv("SLACK_BOT_TOKEN")
+    
+    if not bot_token:
+        print("ERROR: SLACK_BOT_TOKEN environment variable not set")
+        print("\nTo use this script:")
+        print("1. Set your token: export SLACK_BOT_TOKEN='xoxb-...'")
+        print("2. Run: python3 slack_users_fetcher_FIXED.py")
         return
+    
+    # Fetch and cache users
+    users = fetch_slack_users(bot_token)
+    if users:
+        save_users_cache(users)
+        print(f"\n✓ COMPLETE!")
+    else:
+        print("ERROR: Could not fetch users")
 
 if __name__ == "__main__":
     main()
