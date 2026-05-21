@@ -8,10 +8,9 @@
         .container { max-width: 1600px; margin: 0 auto; background: white; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         h1 { font-size: 28px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
         .meta { color: #666; font-size: 14px; margin-bottom: 24px; }
-        .tabs { display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 24px; gap: 0; }
+        .tabs { display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 24px; }
         .tab-button { padding: 12px 20px; background: none; border: none; cursor: pointer; font-size: 15px; font-weight: 500; color: #666; border-bottom: 3px solid transparent; margin-bottom: -2px; }
         .tab-button.active { color: #1a1a1a; border-bottom-color: #3b82f6; }
-        .tab-button:hover { color: #1a1a1a; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
@@ -19,26 +18,23 @@
         .stat-label { color: #666; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; }
         .stat-value { font-size: 24px; font-weight: 600; color: #1a1a1a; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; word-break: break-word; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
         th { background: #f9f9f9; font-weight: 600; color: #1a1a1a; }
         th.date { text-align: center; width: 70px; }
-        td.date { text-align: center; font-weight: 500; color: #0066cc; }
+        td.date { text-align: center; color: #0066cc; }
         tr:hover { background: #fafafa; }
         .silent { background: #fffbea; }
         .active { background: #f0fdf4; }
         .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
         .badge.warning { background: #fcd34d; color: #7c2d12; }
         .badge.success { background: #bbf7d0; color: #166534; }
-        .notes-input { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; }
-        .notes-input:focus { outline: none; border-color: #3b82f6; background: #eff6ff; }
-        .notes-cell { min-width: 150px; }
-        .save-indicator { font-size: 11px; color: #10b981; margin-top: 2px; }
+        .notes { max-width: 200px; color: #666; font-size: 13px; word-break: break-word; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Task Tracker Dashboard</h1>
-        <div class="meta">Generated: Thursday, May 21, 2026 at 03:12 PM EST</div>
+        <div class="meta">Generated: Thursday, May 21, 2026 at 04:21 PM EST | To add notes: edit tasker_notes.json and commit to GitHub</div>
         
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'claim')">Claim Sheet Activity</button>
@@ -46,7 +42,7 @@
             <button class="tab-button" onclick="openTab(event, 'historic')">Historic Data</button>
         </div>
         
-        <!-- CLAIM SHEET TAB -->
+        <!-- CLAIM SHEET -->
         <div id="claim" class="tab-content active">
             <div class="stats">
                 <div class="stat-card">
@@ -67,6 +63,7 @@
                 </div>
             </div>
             
+            <div style="overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -78,7 +75,7 @@
                         <th class='date'>Thu 05/21</th>
                         <th class='date'>Total</th>
                         <th>Status</th>
-                        <th class="notes-cell">Notes</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,10 +88,7 @@
                         <td class='date'>-</td>
                         <td class='date'>6</td>
                         <td><span class='badge warning'>⚠ Silent</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Antonio V" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='silent'>
                         <td>Ariya S</td>
@@ -105,10 +99,7 @@
                         <td class='date'>-</td>
                         <td class='date'>8</td>
                         <td><span class='badge warning'>⚠ Silent</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Ariya S" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'>Graduation weekend</td>
                     </tr>
                     <tr class='silent'>
                         <td>Ava Z</td>
@@ -119,10 +110,7 @@
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td><span class='badge warning'>⚠ Silent</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Ava Z" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='silent'>
                         <td>Caitlin R</td>
@@ -133,10 +121,7 @@
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td><span class='badge warning'>⚠ Silent</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Caitlin R" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'>She is waiting for tasks</td>
                     </tr>
                     <tr class='active'>
                         <td>Diego P</td>
@@ -147,10 +132,7 @@
                         <td class='date'>-</td>
                         <td class='date'>7</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Diego P" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Diogo P</td>
@@ -161,10 +143,7 @@
                         <td class='date'>3</td>
                         <td class='date'>12</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Diogo P" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Elliot S</td>
@@ -175,10 +154,7 @@
                         <td class='date'>2</td>
                         <td class='date'>15</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Elliot S" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Francisco C</td>
@@ -189,10 +165,7 @@
                         <td class='date'>2</td>
                         <td class='date'>13</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Francisco C" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Jalaj G</td>
@@ -203,10 +176,7 @@
                         <td class='date'>-</td>
                         <td class='date'>15</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jalaj G" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='silent'>
                         <td>Jared M</td>
@@ -217,10 +187,7 @@
                         <td class='date'>-</td>
                         <td class='date'>2</td>
                         <td><span class='badge warning'>⚠ Silent</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jared M" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Jeff Z</td>
@@ -231,10 +198,7 @@
                         <td class='date'>1</td>
                         <td class='date'>3</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jeff Z" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>John W</td>
@@ -245,10 +209,7 @@
                         <td class='date'>-</td>
                         <td class='date'>7</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="John W" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Megan S</td>
@@ -259,10 +220,7 @@
                         <td class='date'>-</td>
                         <td class='date'>2</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Megan S" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Nadine M</td>
@@ -273,10 +231,7 @@
                         <td class='date'>2</td>
                         <td class='date'>6</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Nadine M" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Pragyat A</td>
@@ -287,10 +242,7 @@
                         <td class='date'>5</td>
                         <td class='date'>7</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Pragyat A" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Richards C</td>
@@ -301,10 +253,7 @@
                         <td class='date'>3</td>
                         <td class='date'>3</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Richards C" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Spencer H</td>
@@ -315,20 +264,18 @@
                         <td class='date'>2</td>
                         <td class='date'>19</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Spencer H" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
         
-        <!-- DECOMP TAB -->
+        <!-- DECOMP -->
         <div id="decomp" class="tab-content">
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-label">Total Decomp Tasks</div>
+                    <div class="stat-label">Total Decomp</div>
                     <div class="stat-value">16</div>
                 </div>
                 <div class="stat-card">
@@ -336,15 +283,16 @@
                     <div class="stat-value">16</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Silent (48+hrs)</div>
+                    <div class="stat-label">Silent</div>
                     <div class="stat-value" style="color: #dc2626;">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Total Decomp Items</div>
+                    <div class="stat-label">Total Items</div>
                     <div class="stat-value">20</div>
                 </div>
             </div>
             
+            <div style="overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -356,7 +304,7 @@
                         <th class='date'>Thu 05/21</th>
                         <th class='date'>Total</th>
                         <th>Status</th>
-                        <th class="notes-cell">Notes</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -369,10 +317,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Alec T" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Antonio V</td>
@@ -383,10 +328,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Antonio V" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Ariya S</td>
@@ -397,10 +339,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Ariya S" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'>Graduation weekend</td>
                     </tr>
                     <tr class='active'>
                         <td>Ava Z</td>
@@ -411,10 +350,7 @@
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Ava Z" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Diogo P</td>
@@ -425,10 +361,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Diogo P" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Elliot S</td>
@@ -439,10 +372,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Elliot S" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>End</td>
@@ -453,10 +383,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="End" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Francisco C</td>
@@ -467,10 +394,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Francisco C" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Jacob Coran</td>
@@ -481,10 +405,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jacob Coran" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Jalaj G</td>
@@ -495,10 +416,7 @@
                         <td class='date'>4</td>
                         <td class='date'>5</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jalaj G" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Jared M</td>
@@ -509,10 +427,7 @@
                         <td class='date'>2</td>
                         <td class='date'>14</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Jared M" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>John W</td>
@@ -523,10 +438,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="John W" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Melvan H</td>
@@ -537,10 +449,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Melvan H" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Nimisha M</td>
@@ -551,10 +460,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Nimisha M" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Richards C</td>
@@ -565,10 +471,7 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Richards C" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                     <tr class='active'>
                         <td>Spencer H</td>
@@ -579,63 +482,26 @@
                         <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
-                        <td class="notes-cell">
-                            <input type="text" class="notes-input" data-tasker="Spencer H" value="" placeholder="Add note..." onchange="saveNote(this)">
-                            <div class="save-indicator" style="display:none;">✓ Saved</div>
-                        </td>
+                        <td class='notes'></td>
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
         
-        <!-- HISTORIC DATA TAB -->
+        <!-- HISTORIC -->
         <div id="historic" class="tab-content">
-            <p style="color: #666; padding: 20px; text-align: center;">Historic data will appear here as you track more weeks.</p>
+            <p style="color: #666; padding: 20px; text-align: center;">Historic data coming soon</p>
         </div>
     </div>
     
     <script>
         function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
-        
-        function saveNote(element) {
-            const tasker = element.getAttribute('data-tasker');
-            const noteText = element.value;
-            const indicator = element.parentElement.querySelector('.save-indicator');
-            
-            // Save to localStorage (persists in browser)
-            const notes = JSON.parse(localStorage.getItem('taskerNotes') || '{{}}');
-            notes[tasker] = noteText;
-            localStorage.setItem('taskerNotes', JSON.stringify(notes));
-            
-            // Show saved indicator
-            indicator.style.display = 'block';
-            setTimeout(() => {
-                indicator.style.display = 'none';
-            }, 2000);
-        }
-        
-        // Load notes from localStorage on page load
-        window.onload = function() {
-            const notes = JSON.parse(localStorage.getItem('taskerNotes') || '{{}}');
-            document.querySelectorAll('.notes-input').forEach(input => {
-                const tasker = input.getAttribute('data-tasker');
-                if (notes[tasker]) {
-                    input.value = notes[tasker];
-                }
-            });
-        };
     </script>
 </body>
 </html>
