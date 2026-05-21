@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Task Tracker - FINAL VERSION
-Notes are saved to tasker_notes.json and committed to GitHub
+Task Tracker - FINAL WORKING VERSION
+Notes from tasker_notes.json are READ and DISPLAYED on dashboard
 """
 
 import json
@@ -148,10 +148,8 @@ def get_silent_taskers(tasker_by_date, all_taskers):
     
     return sorted(silent_list, key=lambda x: x["days_silent"], reverse=True)
 
-def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers):
-    """Generate dashboard HTML"""
-    
-    notes = load_notes()
+def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, notes):
+    """Generate dashboard HTML with NOTES DISPLAYED"""
     
     # Get all dates
     all_dates = set()
@@ -200,13 +198,13 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers):
         .badge {{ display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }}
         .badge.warning {{ background: #fcd34d; color: #7c2d12; }}
         .badge.success {{ background: #bbf7d0; color: #166534; }}
-        .notes {{ max-width: 200px; color: #666; font-size: 13px; word-break: break-word; }}
+        .notes {{ max-width: 250px; color: #333; font-size: 13px; word-break: break-word; }}
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Task Tracker Dashboard</h1>
-        <div class="meta">Generated: {datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')} EST | To add notes: edit tasker_notes.json and commit to GitHub</div>
+        <div class="meta">Generated: {datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')} EST | Edit tasker_notes.json on GitHub to add/update notes</div>
         
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'claim')">Claim Sheet Activity</button>
@@ -257,7 +255,7 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers):
     
     for tasker in sorted(claim_taskers):
         row_class = "silent" if tasker in silent_names else "active"
-        note = notes.get(tasker, "")
+        note = notes.get(tasker, "")  # GET NOTE FROM tasker_notes.json
         
         html += f"                    <tr class='{row_class}'>\n"
         html += f"                        <td>{tasker}</td>\n"
@@ -327,7 +325,7 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers):
     
     for tasker in sorted(decomp_taskers):
         row_class = "silent" if tasker in silent_decomp_names else "active"
-        note = notes.get(tasker, "")
+        note = notes.get(tasker, "")  # GET NOTE FROM tasker_notes.json
         
         html += f"                    <tr class='{row_class}'>\n"
         html += f"                        <td>{tasker}</td>\n"
@@ -373,11 +371,15 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers):
     
     with open(Path.cwd() / "dashboard.html", 'w') as f:
         f.write(html)
-    print(f"✓ Generated dashboard.html")
+    print(f"✓ Generated dashboard.html WITH NOTES")
 
 def main():
     print(f"\n=== Task Tracker Processor ===")
     print(f"Working directory: {Path.cwd()}")
+    
+    # LOAD NOTES FIRST
+    notes = load_notes()
+    print(f"✓ Loaded {len(notes)} notes from tasker_notes.json")
     
     slack_users = load_slack_users()
     print(f"✓ Loaded {len(slack_users)} Slack users")
@@ -399,7 +401,7 @@ def main():
     print(f"✓ Model Decomp: {len(decomp_taskers)} taskers")
     
     print(f"\n✓ Generating dashboard...")
-    generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers)
+    generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, notes)
     
     print(f"\n✓ COMPLETE!")
     print(f"Dashboard: https://aashnagoel.github.io/task-tracker/dashboard.html")
