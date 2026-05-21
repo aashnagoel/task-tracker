@@ -12,13 +12,8 @@
         .person-card { border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 16px; border-radius: 6px; background: #fafafa; }
         .person-name { font-weight: 600; font-size: 16px; color: #1a1a1a; margin-bottom: 8px; }
         .person-meta { color: #666; font-size: 13px; margin: 4px 0; }
-        .slack-info { background: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 13px; }
-        .slack-info.ambiguous { background: #fff3cd; color: #856404; }
-        .slack-info.none { background: #f8d7da; color: #721c24; }
-        .slack-options { margin: 12px 0 12px 20px; }
-        .slack-options label { display: block; margin: 6px 0; font-size: 13px; }
-        .username-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; margin: 8px 0; }
         .message-preview { background: #f0f0f0; padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 13px; line-height: 1.5; color: #333; border-left: 3px solid #3b82f6; }
+        .notes-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; margin: 8px 0; }
         .checkbox { display: flex; align-items: center; margin-top: 12px; }
         .checkbox input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }
         .checkbox label { cursor: pointer; font-size: 14px; color: #1a1a1a; margin: 0; }
@@ -27,45 +22,107 @@
         button:hover { background: #f5f5f5; }
         .send-btn { background: #10b981; color: white; border-color: #10b981; }
         .send-btn:hover { background: #059669; }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .no-people { color: #666; padding: 32px 20px; text-align: center; font-size: 15px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Slack Check-in Approval</h1>
-        <div class="meta">Wednesday, May 20, 2026 at 05:28 PM EST</div>
-        <div class="intro">Review people who haven't worked in 48+ hours. Confirm or edit their Slack username and send personalized DMs.</div>
+        <h1>Slack Check-in & Notes</h1>
+        <div class="meta">Thursday, May 21, 2026 at 02:47 PM EST</div>
+        <div class="intro">Review people who haven't worked in 48+ hours. Add notes on why they're silent, then send personalized Slack DMs.</div>
         
         <form id="approval-form">
             <div class="person-card">
-                <p class="person-name">Pragyat A</p>
-                <p class="person-meta">Last activity: <strong>2026-05-17</strong> (3.7 days ago)</p>
+                <p class="person-name">Antonio V</p>
+                <p class="person-meta">Last activity: <strong>2026-05-19</strong> (2.6 days ago)</p>
                 
                 <div class="message-preview">
                     <strong>Message preview:</strong><br>
-                    Hey Pragyat, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
+                    Hey Antonio, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
                 </div>
-                <div class="slack-info">
-                    ✓ Slack user found: <strong>@pragyata999</strong> (Pragyat A)
-                </div>
-                <input type="hidden" name="Pragyat A_slack_username" value="pragyata999">
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="Antonio V_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2"></textarea>
+                
                 <div class="checkbox">
-                    <input type="checkbox" id="Pragyat A" name="selected_Pragyat A" value="Pragyat A" checked>
-                    <label for="Pragyat A">Send DM to @pragyata999</label>
+                    <input type="checkbox" id="Antonio V" name="selected_Antonio V" value="Antonio V">
+                    <label for="Antonio V">Send Slack DM to Antonio</label>
                 </div>
-                <div style="margin-top: 8px; font-size: 12px; color: #666;">
-                    <details>
-                        <summary style="cursor: pointer;">Edit username</summary>
-                        <input type="text" name="Pragyat A_slack_username_override" placeholder="Enter correct username" style="width: 100%; padding: 6px; margin-top: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
-                    </details>
+            </div>
+            <div class="person-card">
+                <p class="person-name">Ariya S</p>
+                <p class="person-meta">Last activity: <strong>2026-05-19</strong> (2.6 days ago)</p>
+                
+                <div class="message-preview">
+                    <strong>Message preview:</strong><br>
+                    Hey Ariya, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
                 </div>
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="Ariya S_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2"></textarea>
+                
+                <div class="checkbox">
+                    <input type="checkbox" id="Ariya S" name="selected_Ariya S" value="Ariya S">
+                    <label for="Ariya S">Send Slack DM to Ariya</label>
+                </div>
+            </div>
+            <div class="person-card">
+                <p class="person-name">Ava Z</p>
+                <p class="person-meta">Last activity: <strong>2026-05-19</strong> (2.6 days ago)</p>
+                
+                <div class="message-preview">
+                    <strong>Message preview:</strong><br>
+                    Hey Ava, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
+                </div>
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="Ava Z_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2"></textarea>
+                
+                <div class="checkbox">
+                    <input type="checkbox" id="Ava Z" name="selected_Ava Z" value="Ava Z">
+                    <label for="Ava Z">Send Slack DM to Ava</label>
+                </div>
+            </div>
+            <div class="person-card">
+                <p class="person-name">Caitlin R</p>
+                <p class="person-meta">Last activity: <strong>2026-05-19</strong> (2.6 days ago)</p>
+                
+                <div class="message-preview">
+                    <strong>Message preview:</strong><br>
+                    Hey Caitlin, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
+                </div>
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="Caitlin R_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2"></textarea>
+                
+                <div class="checkbox">
+                    <input type="checkbox" id="Caitlin R" name="selected_Caitlin R" value="Caitlin R">
+                    <label for="Caitlin R">Send Slack DM to Caitlin</label>
+                </div>
+            </div>
+            <div class="person-card">
+                <p class="person-name">Jared M</p>
+                <p class="person-meta">Last activity: <strong>2026-05-19</strong> (2.6 days ago)</p>
+                
+                <div class="message-preview">
+                    <strong>Message preview:</strong><br>
+                    Hey Jared, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
+                </div>
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="Jared M_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2"></textarea>
+                
+                <div class="checkbox">
+                    <input type="checkbox" id="Jared M" name="selected_Jared M" value="Jared M">
+                    <label for="Jared M">Send Slack DM to Jared</label>
+                </div>
+            </div>
         </form>
         
         <div class="controls">
             <button onclick="selectAll()">Select All</button>
             <button onclick="clearAll()">Clear All</button>
-            <button class="send-btn" onclick="sendMessages()">Send Messages via Slack</button>
+            <button class="send-btn" onclick="sendMessages()">Send & Save Notes</button>
         </div>
     </div>
     
@@ -78,32 +135,18 @@
             document.querySelectorAll('#approval-form input[type="checkbox"]').forEach(cb => cb.checked = false);
         }
         
-        function sendMessages() {
+        async function sendMessages() {
             const selected = [];
-            const form = document.getElementById('approval-form');
             
             document.querySelectorAll('#approval-form input[type="checkbox"]:checked').forEach(cb => {
                 const taskName = cb.name.replace('selected_', '');
+                const notesField = document.querySelector(`textarea[name="${taskName}_notes"]`);
+                const reason = notesField ? notesField.value : "";
                 
-                const override = document.querySelector(`input[name="${taskName}_slack_username_override"]`);
-                let username = null;
-                
-                if (override && override.value) {
-                    username = override.value;
-                } else {
-                    const hiddenInput = document.querySelector(`input[name="${taskName}_slack_username"]`);
-                    if (hiddenInput) {
-                        username = hiddenInput.value;
-                    }
-                    const radioInput = document.querySelector(`input[name="${taskName}_slack_username"]:checked`);
-                    if (radioInput) {
-                        username = radioInput.value;
-                    }
-                }
-                
-                if (username) {
-                    selected.push({name: taskName, username: username});
-                }
+                selected.push({
+                    name: taskName,
+                    reason: reason
+                });
             });
             
             if (selected.length === 0) {
@@ -113,11 +156,25 @@
             
             let message = `Ready to send DMs to ${selected.length} person${selected.length !== 1 ? 's' : ''}?\n\n`;
             selected.forEach(s => {
-                message += `• ${s.name} (@${s.username})\n`;
+                message += `• ${s.name}\n`;
             });
             
             if (confirm(message)) {
-                alert('✓ Messages approved!\n\nDMs sent to:\n' + selected.map(s => `@${s.username}`).join(', '));
+                try {
+                    const response = await fetch('/send_slack_messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({{ people: selected }})
+                    });
+                    
+                    if (response.ok) {
+                        alert('✓ Messages sent and notes saved!');
+                    } else {
+                        alert('✗ Error sending messages. Check console.');
+                    }
+                } catch (error) {
+                    alert('✗ Error: ' + error.message);
+                }
             }
         }
     </script>

@@ -29,16 +29,19 @@
         .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
         .badge.warning { background: #fcd34d; color: #7c2d12; }
         .badge.success { background: #bbf7d0; color: #166534; }
+        .notes-column { max-width: 200px; font-size: 12px; color: #666; }
+        .note-tag { background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 3px; font-size: 11px; margin-top: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Task Tracker Dashboard</h1>
-        <div class="meta">Generated: Wednesday, May 20, 2026 at 05:28 PM EST</div>
+        <div class="meta">Generated: Thursday, May 21, 2026 at 02:47 PM EST</div>
         
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'claim')">Claim Sheet Activity</button>
             <button class="tab-button" onclick="openTab(event, 'decomp')">Decomp Progress</button>
+            <button class="tab-button" onclick="openTab(event, 'silent')">Silent Taskers & Notes</button>
             <button class="tab-button" onclick="openTab(event, 'historic')">Historic Data</button>
         </div>
         
@@ -47,19 +50,19 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-label">Total Taskers</div>
-                    <div class="stat-value">16</div>
+                    <div class="stat-value">17</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Active</div>
-                    <div class="stat-value">15</div>
+                    <div class="stat-value">12</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Silent (48+hrs)</div>
-                    <div class="stat-value" style="color: #dc2626;">1</div>
+                    <div class="stat-value" style="color: #dc2626;">5</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Total Tasks</div>
-                    <div class="stat-value">99</div>
+                    <div class="stat-value">127</div>
                 </div>
             </div>
             
@@ -71,54 +74,60 @@
                         <th class='date'>Mon 05/18</th>
                         <th class='date'>Tue 05/19</th>
                         <th class='date'>Wed 05/20</th>
+                        <th class='date'>Thu 05/21</th>
                         <th class='date'>Total</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class='active'>
+                    <tr class='silent'>
                         <td>Antonio V</td>
                         <td class='date'>-</td>
                         <td class='date'>3</td>
                         <td class='date'>3</td>
                         <td class='date'>-</td>
+                        <td class='date'>-</td>
                         <td class='date'>6</td>
-                        <td><span class='badge success'>✓ Active</span></td>
+                        <td><span class='badge warning'>⚠ Silent</span></td>
                     </tr>
-                    <tr class='active'>
+                    <tr class='silent'>
                         <td>Ariya S</td>
                         <td class='date'>-</td>
-                        <td class='date'>6</td>
+                        <td class='date'>7</td>
                         <td class='date'>1</td>
                         <td class='date'>-</td>
-                        <td class='date'>7</td>
-                        <td><span class='badge success'>✓ Active</span></td>
+                        <td class='date'>-</td>
+                        <td class='date'>8</td>
+                        <td><span class='badge warning'>⚠ Silent</span></td>
                     </tr>
-                    <tr class='active'>
+                    <tr class='silent'>
                         <td>Ava Z</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td class='date'>-</td>
+                        <td class='date'>-</td>
                         <td class='date'>1</td>
-                        <td><span class='badge success'>✓ Active</span></td>
+                        <td><span class='badge warning'>⚠ Silent</span></td>
                     </tr>
-                    <tr class='active'>
+                    <tr class='silent'>
                         <td>Caitlin R</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td class='date'>-</td>
+                        <td class='date'>-</td>
                         <td class='date'>1</td>
-                        <td><span class='badge success'>✓ Active</span></td>
+                        <td><span class='badge warning'>⚠ Silent</span></td>
                     </tr>
                     <tr class='active'>
                         <td>Diego P</td>
-                        <td class='date'>-</td>
                         <td class='date'>1</td>
-                        <td class='date'>3</td>
-                        <td class='date'>-</td>
+                        <td class='date'>1</td>
                         <td class='date'>4</td>
+                        <td class='date'>1</td>
+                        <td class='date'>-</td>
+                        <td class='date'>7</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
@@ -126,17 +135,19 @@
                         <td class='date'>1</td>
                         <td class='date'>2</td>
                         <td class='date'>2</td>
+                        <td class='date'>4</td>
                         <td class='date'>3</td>
-                        <td class='date'>8</td>
+                        <td class='date'>12</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
                         <td>Elliot S</td>
                         <td class='date'>-</td>
-                        <td class='date'>5</td>
+                        <td class='date'>4</td>
                         <td class='date'>6</td>
                         <td class='date'>3</td>
-                        <td class='date'>14</td>
+                        <td class='date'>2</td>
+                        <td class='date'>15</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
@@ -145,7 +156,8 @@
                         <td class='date'>3</td>
                         <td class='date'>3</td>
                         <td class='date'>4</td>
-                        <td class='date'>11</td>
+                        <td class='date'>2</td>
+                        <td class='date'>13</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
@@ -154,25 +166,28 @@
                         <td class='date'>4</td>
                         <td class='date'>7</td>
                         <td class='date'>4</td>
+                        <td class='date'>-</td>
                         <td class='date'>15</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
-                    <tr class='active'>
+                    <tr class='silent'>
                         <td>Jared M</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>2</td>
                         <td class='date'>-</td>
+                        <td class='date'>-</td>
                         <td class='date'>2</td>
-                        <td><span class='badge success'>✓ Active</span></td>
+                        <td><span class='badge warning'>⚠ Silent</span></td>
                     </tr>
                     <tr class='active'>
                         <td>Jeff Z</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>1</td>
-                        <td class='date'>-</td>
                         <td class='date'>1</td>
+                        <td class='date'>1</td>
+                        <td class='date'>3</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
@@ -181,6 +196,7 @@
                         <td class='date'>4</td>
                         <td class='date'>-</td>
                         <td class='date'>3</td>
+                        <td class='date'>-</td>
                         <td class='date'>7</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
@@ -190,6 +206,7 @@
                         <td class='date'>1</td>
                         <td class='date'>-</td>
                         <td class='date'>1</td>
+                        <td class='date'>-</td>
                         <td class='date'>2</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
@@ -199,25 +216,38 @@
                         <td class='date'>-</td>
                         <td class='date'>1</td>
                         <td class='date'>3</td>
-                        <td class='date'>4</td>
+                        <td class='date'>2</td>
+                        <td class='date'>6</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
-                    <tr class='silent'>
+                    <tr class='active'>
                         <td>Pragyat A</td>
                         <td class='date'>2</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
-                        <td class='date'>2</td>
-                        <td><span class='badge warning'>⚠ Silent</span></td>
+                        <td class='date'>5</td>
+                        <td class='date'>7</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Richards C</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>3</td>
+                        <td class='date'>3</td>
+                        <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
                         <td>Spencer H</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>9</td>
-                        <td class='date'>5</td>
-                        <td class='date'>14</td>
+                        <td class='date'>8</td>
+                        <td class='date'>2</td>
+                        <td class='date'>19</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                 </tbody>
@@ -229,11 +259,11 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-label">Total Decomp Tasks</div>
-                    <div class="stat-value">4</div>
+                    <div class="stat-value">16</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Active</div>
-                    <div class="stat-value">4</div>
+                    <div class="stat-value">16</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Silent (48+hrs)</div>
@@ -241,7 +271,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Total Decomp Items</div>
-                    <div class="stat-value">10</div>
+                    <div class="stat-value">20</div>
                 </div>
             </div>
             
@@ -253,13 +283,65 @@
                         <th class='date'>Mon 05/18</th>
                         <th class='date'>Tue 05/19</th>
                         <th class='date'>Wed 05/20</th>
+                        <th class='date'>Thu 05/21</th>
                         <th class='date'>Total</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class='active'>
+                        <td>Alec T</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Antonio V</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Ariya S</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
                         <td>Ava Z</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>1</td>
+                        <td class='date'>-</td>
+                        <td class='date'>1</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Diogo P</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Elliot S</td>
+                        <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
@@ -273,6 +355,27 @@
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Francisco C</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Jacob Coran</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
                         <td class='date'>0</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
@@ -282,7 +385,8 @@
                         <td class='date'>-</td>
                         <td class='date'>-</td>
                         <td class='date'>1</td>
-                        <td class='date'>1</td>
+                        <td class='date'>4</td>
+                        <td class='date'>5</td>
                         <td><span class='badge success'>✓ Active</span></td>
                     </tr>
                     <tr class='active'>
@@ -290,9 +394,113 @@
                         <td class='date'>-</td>
                         <td class='date'>2</td>
                         <td class='date'>-</td>
-                        <td class='date'>7</td>
-                        <td class='date'>9</td>
+                        <td class='date'>10</td>
+                        <td class='date'>2</td>
+                        <td class='date'>14</td>
                         <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>John W</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Melvan H</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Nimisha M</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Richards C</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                    <tr class='active'>
+                        <td>Spencer H</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>-</td>
+                        <td class='date'>0</td>
+                        <td><span class='badge success'>✓ Active</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- SILENT TASKERS & NOTES TAB -->
+        <div id="silent" class="tab-content">
+            <h2 style="margin-bottom: 20px;">Silent Taskers & Outreach Notes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Activity</th>
+                        <th>Silent For</th>
+                        <th>Notes / Reason</th>
+                        <th>Last Outreach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Antonio V</td>
+                        <td>2026-05-19</td>
+                        <td>2.6 days</td>
+                        <td class="notes-column">No notes</td>
+                        <td style="font-size: 12px; color: #666;">Not reached out yet</td>
+                    </tr>
+                    <tr>
+                        <td>Ariya S</td>
+                        <td>2026-05-19</td>
+                        <td>2.6 days</td>
+                        <td class="notes-column">No notes</td>
+                        <td style="font-size: 12px; color: #666;">Not reached out yet</td>
+                    </tr>
+                    <tr>
+                        <td>Ava Z</td>
+                        <td>2026-05-19</td>
+                        <td>2.6 days</td>
+                        <td class="notes-column">No notes</td>
+                        <td style="font-size: 12px; color: #666;">Not reached out yet</td>
+                    </tr>
+                    <tr>
+                        <td>Caitlin R</td>
+                        <td>2026-05-19</td>
+                        <td>2.6 days</td>
+                        <td class="notes-column">No notes</td>
+                        <td style="font-size: 12px; color: #666;">Not reached out yet</td>
+                    </tr>
+                    <tr>
+                        <td>Jared M</td>
+                        <td>2026-05-19</td>
+                        <td>2.6 days</td>
+                        <td class="notes-column">No notes</td>
+                        <td style="font-size: 12px; color: #666;">Not reached out yet</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Task Tracker - FINAL VERSION (FIXED)
+Task Tracker - FINAL VERSION with Notes Support
 Reads Claim Sheet + Model Decomp, generates dashboards with tabs
 Detects silent people, personalizes messages with first name only
+Tracks notes on why people are silent
 """
 
 import json
@@ -11,6 +12,21 @@ from pathlib import Path
 import openpyxl
 from collections import defaultdict
 from difflib import SequenceMatcher
+
+# Notes storage file
+NOTES_FILE = Path.cwd() / "silent_tasker_notes.json"
+
+def load_notes():
+    """Load existing notes about silent taskers"""
+    if NOTES_FILE.exists():
+        with open(NOTES_FILE) as f:
+            return json.load(f)
+    return {}
+
+def save_notes(notes):
+    """Save notes to file"""
+    with open(NOTES_FILE, 'w') as f:
+        json.dump(notes, f, indent=2)
 
 def load_slack_users():
     """Load Slack users from cache"""
@@ -222,7 +238,9 @@ def fuzzy_match_user(sheet_name, slack_users):
     return "none", None
 
 def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, slack_users):
-    """Generate dashboard and approval UI"""
+    """Generate dashboard and approval UI with notes"""
+    
+    notes = load_notes()
     
     # Get all dates from both sheets
     all_dates = set()
@@ -242,7 +260,7 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
     claim_silent = get_silent_taskers(claim_data, claim_taskers)
     decomp_silent = get_silent_taskers(decomp_data, decomp_taskers)
     
-    # === DASHBOARD ===
+    # === DASHBOARD with NOTES ===
     html_dashboard = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -274,6 +292,8 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         .badge {{ display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }}
         .badge.warning {{ background: #fcd34d; color: #7c2d12; }}
         .badge.success {{ background: #bbf7d0; color: #166534; }}
+        .notes-column {{ max-width: 200px; font-size: 12px; color: #666; }}
+        .note-tag {{ background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 3px; font-size: 11px; margin-top: 4px; }}
     </style>
 </head>
 <body>
@@ -284,6 +304,7 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'claim')">Claim Sheet Activity</button>
             <button class="tab-button" onclick="openTab(event, 'decomp')">Decomp Progress</button>
+            <button class="tab-button" onclick="openTab(event, 'silent')">Silent Taskers & Notes</button>
             <button class="tab-button" onclick="openTab(event, 'historic')">Historic Data</button>
         </div>
         
@@ -415,6 +436,49 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
             </table>
         </div>
         
+        <!-- SILENT TASKERS & NOTES TAB -->
+        <div id="silent" class="tab-content">
+            <h2 style="margin-bottom: 20px;">Silent Taskers & Outreach Notes</h2>
+"""
+    
+    all_silent = sorted(claim_silent + decomp_silent, key=lambda x: x["hours_silent"], reverse=True)
+    
+    if all_silent:
+        html_dashboard += """            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Activity</th>
+                        <th>Silent For</th>
+                        <th>Notes / Reason</th>
+                        <th>Last Outreach</th>
+                    </tr>
+                </thead>
+                <tbody>
+"""
+        for silent in all_silent:
+            name = silent["name"]
+            tasker_notes = notes.get(name, {})
+            note_text = tasker_notes.get("reason", "No notes")
+            last_outreach = tasker_notes.get("last_outreach", "Not reached out yet")
+            
+            html_dashboard += f"""                    <tr>
+                        <td>{name}</td>
+                        <td>{silent['last_task_date']}</td>
+                        <td>{silent['days_silent']} days</td>
+                        <td class="notes-column">{note_text}</td>
+                        <td style="font-size: 12px; color: #666;">{last_outreach}</td>
+                    </tr>
+"""
+        html_dashboard += """                </tbody>
+            </table>
+"""
+    else:
+        html_dashboard += """            <p style="color: #666; padding: 20px; text-align: center;">Everyone is active! No one is silent.</p>
+"""
+    
+    html_dashboard += """        </div>
+        
         <!-- HISTORIC DATA TAB -->
         <div id="historic" class="tab-content">
             <p style="color: #666; padding: 20px; text-align: center;">Historic data will appear here as you track more weeks.</p>
@@ -445,9 +509,9 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         f.write(html_dashboard)
     print(f"✓ Generated dashboard.html")
     
-    # === APPROVAL UI ===
-    all_silent = claim_silent + decomp_silent
-    all_silent.sort(key=lambda x: x["hours_silent"], reverse=True)
+    # === APPROVAL UI with Slack API Call ===
+    all_silent_merged = claim_silent + decomp_silent
+    all_silent_merged.sort(key=lambda x: x["hours_silent"], reverse=True)
     
     approval_html = f"""<!DOCTYPE html>
 <html>
@@ -463,13 +527,8 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         .person-card {{ border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 16px; border-radius: 6px; background: #fafafa; }}
         .person-name {{ font-weight: 600; font-size: 16px; color: #1a1a1a; margin-bottom: 8px; }}
         .person-meta {{ color: #666; font-size: 13px; margin: 4px 0; }}
-        .slack-info {{ background: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 13px; }}
-        .slack-info.ambiguous {{ background: #fff3cd; color: #856404; }}
-        .slack-info.none {{ background: #f8d7da; color: #721c24; }}
-        .slack-options {{ margin: 12px 0 12px 20px; }}
-        .slack-options label {{ display: block; margin: 6px 0; font-size: 13px; }}
-        .username-input {{ width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; margin: 8px 0; }}
         .message-preview {{ background: #f0f0f0; padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 13px; line-height: 1.5; color: #333; border-left: 3px solid #3b82f6; }}
+        .notes-input {{ width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; margin: 8px 0; }}
         .checkbox {{ display: flex; align-items: center; margin-top: 12px; }}
         .checkbox input {{ margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }}
         .checkbox label {{ cursor: pointer; font-size: 14px; color: #1a1a1a; margin: 0; }}
@@ -478,20 +537,19 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         button:hover {{ background: #f5f5f5; }}
         .send-btn {{ background: #10b981; color: white; border-color: #10b981; }}
         .send-btn:hover {{ background: #059669; }}
-        .send-btn:disabled {{ opacity: 0.5; cursor: not-allowed; }}
         .no-people {{ color: #666; padding: 32px 20px; text-align: center; font-size: 15px; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Slack Check-in Approval</h1>
+        <h1>Slack Check-in & Notes</h1>
         <div class="meta">{datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')} EST</div>
-        <div class="intro">Review people who haven't worked in 48+ hours. Confirm or edit their Slack username and send personalized DMs.</div>
+        <div class="intro">Review people who haven't worked in 48+ hours. Add notes on why they're silent, then send personalized Slack DMs.</div>
         
         <form id="approval-form">
 """
     
-    if not all_silent:
+    if not all_silent_merged:
         approval_html += """            <div class="no-people">
                 <div style="font-size: 32px; margin-bottom: 12px;">✅</div>
                 <p><strong>Everyone is active!</strong></p>
@@ -499,10 +557,11 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
             </div>
 """
     else:
-        for silent in all_silent:
+        for silent in all_silent_merged:
             name = silent["name"]
             first_name = silent["first_name"]
-            match_type, match_result = fuzzy_match_user(name, slack_users)
+            tasker_notes = notes.get(name, {})
+            existing_reason = tasker_notes.get("reason", "")
             
             approval_html += f"""            <div class="person-card">
                 <p class="person-name">{name}</p>
@@ -512,63 +571,15 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
                     <strong>Message preview:</strong><br>
                     Hey {first_name}, I noticed you haven't submitted any tasks in the past couple of days. If you're facing any blockers or have questions, let me know and I'm happy to help!
                 </div>
-"""
-            
-            if match_type == "clear":
-                username = match_result.get("username")
-                real_name = match_result.get("real_name")
-                approval_html += f"""                <div class="slack-info">
-                    ✓ Slack user found: <strong>@{username}</strong> ({real_name})
-                </div>
-                <input type="hidden" name="{name}_slack_username" value="{username}">
-                <div class="checkbox">
-                    <input type="checkbox" id="{name}" name="selected_{name}" value="{name}" checked>
-                    <label for="{name}">Send DM to @{username}</label>
-                </div>
-                <div style="margin-top: 8px; font-size: 12px; color: #666;">
-                    <details>
-                        <summary style="cursor: pointer;">Edit username</summary>
-                        <input type="text" name="{name}_slack_username_override" placeholder="Enter correct username" style="width: 100%; padding: 6px; margin-top: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
-                    </details>
-                </div>
-"""
-            
-            elif match_type == "ambiguous":
-                approval_html += f"""                <div class="slack-info ambiguous">
-                    ⚠️ Multiple possible Slack users found. Please select one:
-                </div>
-                <div class="slack-options">
-"""
-                for idx, candidate in enumerate(match_result):
-                    username = candidate["user"].get("username")
-                    real_name = candidate["user"].get("real_name")
-                    approval_html += f"""                    <label>
-                        <input type="radio" name="{name}_slack_username" value="{username}" {'checked' if idx == 0 else ''}>
-                        @{username} ({real_name})
-                    </label>
-"""
-                approval_html += """                </div>
-                <div class="checkbox">
-                    <input type="checkbox" id="{name}" name="selected_{name}" value="{name}" checked>
-                    <label for="{name}">Send DM to selected user</label>
-                </div>
-                <div style="margin-top: 8px; font-size: 12px; color: #666;">
-                    <details>
-                        <summary style="cursor: pointer;">Or enter different username</summary>
-                        <input type="text" name="{name}_slack_username_override" placeholder="Enter correct username" style="width: 100%; padding: 6px; margin-top: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
-                    </details>
-                </div>
-"""
-            
-            else:
-                approval_html += f"""                <div class="slack-info none">
-                    ❌ No Slack user found. Please enter their username:
-                </div>
-                <input type="text" name="{name}_slack_username" placeholder="e.g., john.wilson" class="username-input" required>
+                
+                <label style="font-size: 13px; color: #666;">Why are they silent? (add reason/notes)</label>
+                <textarea name="{name}_notes" class="notes-input" placeholder="e.g., Sick leave, Technical issues, Waiting for guidance..." rows="2">{existing_reason}</textarea>
+                
                 <div class="checkbox">
                     <input type="checkbox" id="{name}" name="selected_{name}" value="{name}">
-                    <label for="{name}">Send DM to entered username</label>
+                    <label for="{name}">Send Slack DM to {first_name}</label>
                 </div>
+            </div>
 """
     
     approval_html += """        </form>
@@ -576,7 +587,7 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
         <div class="controls">
             <button onclick="selectAll()">Select All</button>
             <button onclick="clearAll()">Clear All</button>
-            <button class="send-btn" onclick="sendMessages()">Send Messages via Slack</button>
+            <button class="send-btn" onclick="sendMessages()">Send & Save Notes</button>
         </div>
     </div>
     
@@ -589,32 +600,18 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
             document.querySelectorAll('#approval-form input[type="checkbox"]').forEach(cb => cb.checked = false);
         }
         
-        function sendMessages() {
+        async function sendMessages() {
             const selected = [];
-            const form = document.getElementById('approval-form');
             
             document.querySelectorAll('#approval-form input[type="checkbox"]:checked').forEach(cb => {
                 const taskName = cb.name.replace('selected_', '');
+                const notesField = document.querySelector(`textarea[name="${taskName}_notes"]`);
+                const reason = notesField ? notesField.value : "";
                 
-                const override = document.querySelector(`input[name="${taskName}_slack_username_override"]`);
-                let username = null;
-                
-                if (override && override.value) {
-                    username = override.value;
-                } else {
-                    const hiddenInput = document.querySelector(`input[name="${taskName}_slack_username"]`);
-                    if (hiddenInput) {
-                        username = hiddenInput.value;
-                    }
-                    const radioInput = document.querySelector(`input[name="${taskName}_slack_username"]:checked`);
-                    if (radioInput) {
-                        username = radioInput.value;
-                    }
-                }
-                
-                if (username) {
-                    selected.push({name: taskName, username: username});
-                }
+                selected.push({
+                    name: taskName,
+                    reason: reason
+                });
             });
             
             if (selected.length === 0) {
@@ -624,11 +621,25 @@ def generate_dashboards(claim_data, claim_taskers, decomp_data, decomp_taskers, 
             
             let message = `Ready to send DMs to ${selected.length} person${selected.length !== 1 ? 's' : ''}?\\n\\n`;
             selected.forEach(s => {
-                message += `• ${s.name} (@${s.username})\\n`;
+                message += `• ${s.name}\\n`;
             });
             
             if (confirm(message)) {
-                alert('✓ Messages approved!\\n\\nDMs sent to:\\n' + selected.map(s => `@${s.username}`).join(', '));
+                try {
+                    const response = await fetch('/send_slack_messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({{ people: selected }})
+                    });
+                    
+                    if (response.ok) {
+                        alert('✓ Messages sent and notes saved!');
+                    } else {
+                        alert('✗ Error sending messages. Check console.');
+                    }
+                } catch (error) {
+                    alert('✗ Error: ' + error.message);
+                }
             }
         }
     </script>
